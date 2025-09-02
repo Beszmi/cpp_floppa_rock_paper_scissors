@@ -303,6 +303,15 @@ bool texture_manager::set_text_background(const std::string& name, bool enabled,
     return rerender_text_texture(it->second);
 }
 
+bool texture_manager::set_text_background_const_padding(const std::string& name, bool enabled, SDL_Color color) {
+    auto it = text_meta.find(name); if (it == text_meta.end()) return false;
+    it->second.bg_enabled = enabled;
+    if (enabled) {
+        it->second.bg_color = color;
+    }
+    return rerender_text_texture(it->second);
+}
+
 bool texture_manager::set_text_wrap(const std::string& name, int new_wrap) {
     auto it = text_meta.find(name); if (it == text_meta.end()) return false;
     if (it->second.wrap_width == new_wrap) return true;

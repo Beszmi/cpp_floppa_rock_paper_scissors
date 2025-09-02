@@ -13,6 +13,7 @@
 #include "graphic_components/camera.hpp"
 #include "graphic_components/sprites.hpp"
 #include <cmath>
+#include "text.hpp"
 
 //game objects
 
@@ -30,6 +31,7 @@ class GameObject {
 protected:
 	bool active = false;
 	bool hover = false;
+	void set_texture(SDL_Texture* t) { obj_tex = t; }
 public:
 	GameObject(const std::string& name, const std::string& texture, const texture_manager& tex_mgr, float scale = 1.0f, bool show_it = false, int layer_in = 0);
 	GameObject(const std::string& name, const std::string& texture, const texture_manager& tex_mgr, int x, int y, float scale = 1.0f, bool show_it = false, int layer_in = 0);
@@ -145,7 +147,6 @@ public:
 // DERIVED OBJECTS --------------------------------------------------------------------------------------
 
 class Button : public GameObject {
-	bool pressed = false;
 public:
 	using GameObject::GameObject;
 	//void action()  override { std::cout << "test"; }
@@ -157,6 +158,24 @@ public:
 	void on_hover_exit(SDL_Cursor* default_cursor) override;
 
 	~Button() = default;
+};
+
+class Text_Button : public GameObject {
+	texture_manager& tex_mgr;
+public:
+	Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, float scale = 1.0f, bool show_it = false, int layer_in = 0);
+	Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, int x, int y, float scale = 1.0f, bool show_it = false, int layer_in = 0);
+	Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, GameObject_cluster* prn, float scale = 1.0f, bool show_it = false, int layer_in = 0);
+	Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, int x, int y, GameObject_cluster* prn, float scale = 1.0f, bool show_it = false, int layer_in = 0);
+	//void action()  override { std::cout << "test"; }
+	std::unique_ptr<GameObject> clone() const override { return std::make_unique<Text_Button>(*this); }
+
+	void update(double dt, double speed = 400) override;
+	using GameObject::render;
+	void on_hover_enter(SDL_Cursor* pointer_cursor) override;
+	void on_hover_exit(SDL_Cursor* default_cursor) override;
+
+	~Text_Button() = default;
 };
 
 //streched bg obj

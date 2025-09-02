@@ -15,8 +15,6 @@ int main(int argc, char *argv[]) {
 	const double max_dt = 0.25;
 	SDL_Cursor* default_cursor = SDL_GetDefaultCursor();
 	SDL_Cursor* pointer_cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
-	std::cout << "main pointers: " << default_cursor << " " << pointer_cursor << std::endl;
-	std::cerr << "cursor error: " << SDL_GetError() << "\n";
 	game1.set_cursors(default_cursor, pointer_cursor);
 
 	while (game1.running()) {

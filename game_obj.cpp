@@ -233,6 +233,53 @@ void Button::on_hover_enter(SDL_Cursor* pointer_cursor) {
 void Button::on_hover_exit(SDL_Cursor* default_cursor) {
 	SDL_SetCursor(default_cursor);
 }
+
+// TEXT BUTTONS
+
+Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, float scale, bool show_it, int layer_in) 
+	: GameObject(name, texture, tex_mgr_in, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {}
+
+Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, int x, int y, float scale, bool show_it, int layer_in)
+	: GameObject(name, texture, tex_mgr_in, x, y, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {}
+
+Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, GameObject_cluster* prn, float scale, bool show_it, int layer_in) 
+	: GameObject(name, texture, tex_mgr_in, prn, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {}
+
+Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, int x, int y, GameObject_cluster* prn, float scale, bool show_it, int layer_in)
+	: GameObject(name, texture, tex_mgr_in, x, y, prn, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {}
+
+void Text_Button::update(double dt, double speed) {
+	GameObject::update(0.0, 0.0);
+}
+
+void Text_Button::on_hover_enter(SDL_Cursor* pointer_cursor) {
+	hover = true;
+	SDL_SetCursor(pointer_cursor);
+
+	if (tex_mgr.set_text_background_const_padding(get_name(), true, Colors::grey)) {
+		if (auto* t = tex_mgr.get_texture(get_name())) {
+			set_texture(t);
+			float w = 0, h = 0; SDL_GetTextureSize(t, &w, &h);
+			get_src_rect() = { 0,0,w,h };
+			auto& d = get_dst_rect(); d.w = w; d.h = h;
+		}
+	}
+}
+
+void Text_Button::on_hover_exit(SDL_Cursor* default_cursor) {
+	hover = false;
+	SDL_SetCursor(default_cursor);
+
+	if (tex_mgr.set_text_background_const_padding(get_name(), true, Colors::light_grey)) {
+		if (auto* t = tex_mgr.get_texture(get_name())) {
+			set_texture(t);
+			float w = 0, h = 0; SDL_GetTextureSize(t, &w, &h);
+			get_src_rect() = { 0,0,w,h };
+			auto& d = get_dst_rect(); d.w = w; d.h = h;
+		}
+	}
+}
+
 //sprite objs
 
 void streched_bg_obj::set_texture(const std::string& texture, const texture_manager& tex_mgr) {

@@ -64,6 +64,7 @@ public:
     bool set_text_size(const std::string& name, float new_ptsize);
     bool set_text_wrap(const std::string& name, int new_wrap);
     bool set_text_background(const std::string& name, bool enabled, SDL_Color color = { 0,0,0,0 }, int pad_x = 0, int pad_y = 0);
+    bool set_text_background_const_padding(const std::string& name, bool enabled, SDL_Color color = { 0,0,0,0 });
     bool set_text_border(const std::string& name, bool enabled, SDL_Color color = { 0,0,0,0 }, int thickness = 1);
 };
 

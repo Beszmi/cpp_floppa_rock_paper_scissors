@@ -144,7 +144,6 @@
     <ClCompile Include="graphic_components\texture_manager.cpp" />
     <ClCompile Include="graphic_components\tilemap.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.hpp" />

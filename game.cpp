@@ -122,17 +122,17 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	tex_mgr.create_text_texture("rock_test", "fonts/ARIAL.TTF", 48, "ROCK", Colors::white);
 	tex_mgr.set_text_background("rock_test", true, Colors::light_grey, 4, 4);
 	tex_mgr.set_text_border("rock_test", true, Colors::black, 2);
-	obj_container.spawn_as<Button>("rock_test", "rock_test", tex_mgr, middle.x - (middle.x / 2) - ((tex_mgr.get_texture("rock_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("rock_test")->h / 2)) * 1.5, screen_scale_factor, true, 0);
+	obj_container.spawn_as<Text_Button>("rock_test", "rock_test", tex_mgr, middle.x - (middle.x / 2) - ((tex_mgr.get_texture("rock_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("rock_test")->h / 2)) * 1.5, screen_scale_factor, true, 0);
 
 	tex_mgr.create_text_texture("paper_test", "fonts/ARIAL.TTF", 48, "PAPER", Colors::white);
 	tex_mgr.set_text_background("paper_test", true, Colors::light_grey, 4, 4);
 	tex_mgr.set_text_border("paper_test", true, Colors::black, 2);
-	obj_container.spawn_as<Button>("paper_test", "paper_test", tex_mgr, middle.x - ((tex_mgr.get_texture("paper_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("paper_test")->h / 2)) * 1.5, screen_scale_factor, true, 0);
+	obj_container.spawn_as<Text_Button>("paper_test", "paper_test", tex_mgr, middle.x - ((tex_mgr.get_texture("paper_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("paper_test")->h / 2)) * 1.5, screen_scale_factor, true, 0);
 
 	tex_mgr.create_text_texture("scissors_test", "fonts/ARIAL.TTF", 48, "SCISSORS", Colors::white);
 	tex_mgr.set_text_background("scissors_test", true, Colors::light_grey, 4, 4);
 	tex_mgr.set_text_border("scissors_test", true, Colors::black, 2);
-	obj_container.spawn_as<Button>("scissors_test", "scissors_test", tex_mgr, middle.x + (middle.x / 2) - ((tex_mgr.get_texture("scissors_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("scissors_test")->h / 2)) * 1.5, screen_scale_factor, true, 0);
+	obj_container.spawn_as<Text_Button>("scissors_test", "scissors_test", tex_mgr, middle.x + (middle.x / 2) - ((tex_mgr.get_texture("scissors_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("scissors_test")->h / 2)) * 1.5, screen_scale_factor, true, 0);
 
 
 	streched_bg_obj& floppa = *obj_container.get<streched_bg_obj>("-");
