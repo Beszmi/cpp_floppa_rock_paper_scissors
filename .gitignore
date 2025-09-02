@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+
+/.vs
+/x64
+/SDL3
+/SDL3_image
+/SDL3_ttf
+cpp_floppa_game.vcxproj.filters
+cpp_floppa_game.vcxproj.user
+/fonts/ARIAL.TTF
