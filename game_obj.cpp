@@ -205,9 +205,8 @@ void GameObject_cluster::add_item_world(const GameObject& obj_in, bool show_in_c
 }
 
 void GameObject_cluster::update(double dt, double speed) {
-	speed = 150;
 	get_transform()->computeWorld();
-	GameObject::update(dt, speed);
+	GameObject::update(0, 0);
 
 	for (auto& c : items) {
 		c->update(dt, 0);
@@ -216,6 +215,7 @@ void GameObject_cluster::update(double dt, double speed) {
 
 void GameObject_cluster::render(SDL_Renderer* ren, const Camera& cam) const {
 	//render self
+	if (!does_show()) return;
 	GameObject::render(ren, cam);
 	if (SDL_GetError()[0] != '\0') {
 		SDL_Log("[SDL] RenderCopy (cluster) error: %s", SDL_GetError());
@@ -273,6 +273,24 @@ int Text_Button::action() {
 
 void Text_Button::update(double dt, double speed) {
 	GameObject::update(0.0, 0.0);
+
+	SDL_Texture* latest = tex_mgr.get_texture(get_name());
+	if (latest != get_tex()) {
+		set_texture(latest);
+
+		float w = 0, h = 0;
+		if (latest) {
+			SDL_GetTextureSize(latest, &w, &h);
+		}
+		else {
+			w = h = 0;
+		}
+
+		get_src_rect() = { 0, 0, w, h };
+		auto& d = get_dst_rect();
+		d.w = w;
+		d.h = h;
+	}
 }
 
 void Text_Button::on_hover_enter(SDL_Cursor* pointer_cursor) {
@@ -294,6 +312,17 @@ void Text_Button::on_hover_exit(SDL_Cursor* default_cursor) {
 	SDL_SetCursor(default_cursor);
 
 	if (tex_mgr.set_text_background_const_padding(get_name(), true, Colors::light_grey)) {
+		if (auto* t = tex_mgr.get_texture(get_name())) {
+			set_texture(t);
+			float w = 0, h = 0; SDL_GetTextureSize(t, &w, &h);
+			get_src_rect() = { 0,0,w,h };
+			auto& d = get_dst_rect(); d.w = w; d.h = h;
+		}
+	}
+}
+
+void Text_Button::set_text(const std::string& new_text) {
+	if (tex_mgr.set_text_string(get_name(), new_text)) {
 		if (auto* t = tex_mgr.get_texture(get_name())) {
 			set_texture(t);
 			float w = 0, h = 0; SDL_GetTextureSize(t, &w, &h);

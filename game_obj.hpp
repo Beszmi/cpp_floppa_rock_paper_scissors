@@ -180,6 +180,7 @@ public:
 	void update(double dt, double speed = 400) override;
 	void on_hover_enter(SDL_Cursor* pointer_cursor) override;
 	void on_hover_exit(SDL_Cursor* default_cursor) override;
+	void set_text(const std::string& new_text);
 
 	~Text_Button() = default;
 };

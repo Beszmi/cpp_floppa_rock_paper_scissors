@@ -51,8 +51,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 		if (SDL_DisplayID did = SDL_GetPrimaryDisplay()) {
 			SDL_Rect usable{};
 			if (SDL_GetDisplayUsableBounds(did, &usable)) {
-				target_w = usable.w;
-				target_h = usable.h - topBorder;
+				target_w = 1920; //usable.w;
+				target_h = 1080; //usable.h - topBorder;
 				target_x = usable.x;
 				target_y = usable.y + topBorder;
 			}
@@ -117,7 +117,13 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	streched_bg_obj& floppa = *obj_container.get<streched_bg_obj>("-");
 	floppa.init("floppa", tex_mgr, screen_w, screen_h);
 
+	//Screen space sizes
 	SDL_FPoint middle = ScreenPercentToWindow(renderer, 0.5f, 0.5f);
+	SDL_FPoint fifth = ScreenPercentToWindow(renderer, 0.2f, 0.2f);
+	SDL_FPoint tenth = ScreenPercentToWindow(renderer, 0.1f, 0.1f);
+	SDL_FPoint percent = ScreenPercentToWindow(renderer, 0.01f, 0.01f);
+	
+
 	tex_mgr.create_text_texture("cim", "fonts/ARIAL.TTF", 72, "FLOPPA ROCK PAPER SCISSORS", Colors::red);
 	obj_container.spawn_as<Button>("cim", "cim", tex_mgr, middle.x - ((tex_mgr.get_texture("cim")->w / 2) * screen_scale_factor), (middle.y-(tex_mgr.get_texture("cim")->h / 2))/16, screen_scale_factor, true, 0);
 
@@ -129,17 +135,37 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	tex_mgr.create_text_texture("paper_text", "fonts/ARIAL.TTF", 48, "PAPER", Colors::white);
 	tex_mgr.set_text_background("paper_text", true, Colors::light_grey, 4, 4);
 	tex_mgr.set_text_border("paper_text", true, Colors::black, 2);
-	obj_container.spawn_as<Text_Button>("paper_test", "paper_text", tex_mgr, middle.x - ((tex_mgr.get_texture("paper_text")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("paper_text")->h / 2)) * 1.5, screen_scale_factor, true, 0, 1);
+	obj_container.spawn_as<Text_Button>("paper_text", "paper_text", tex_mgr, middle.x - ((tex_mgr.get_texture("paper_text")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("paper_text")->h / 2)) * 1.5, screen_scale_factor, true, 0, 1);
 
 	tex_mgr.create_text_texture("scissors_text", "fonts/ARIAL.TTF", 48, "SCISSORS", Colors::white);
 	tex_mgr.set_text_background("scissors_text", true, Colors::light_grey, 4, 4);
 	tex_mgr.set_text_border("scissors_text", true, Colors::black, 2);
 	obj_container.spawn_as<Text_Button>("scissors_text", "scissors_text", tex_mgr, middle.x + (middle.x / 2) - ((tex_mgr.get_texture("scissors_text")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("scissors_text")->h / 2)) * 1.5, screen_scale_factor, true, 0, 2);
 
-	tex_mgr.create_text_texture("extra_text", "fonts/ARIAL.TTF", 48, "EXTRA BUTTON", Colors::white);
+	tex_mgr.create_text_texture("extra_text", "fonts/ARIAL.TTF", 48, "PLAY AGAIN", Colors::white);
 	tex_mgr.set_text_background("extra_text", true, Colors::light_grey, 4, 4);
 	tex_mgr.set_text_border("extra_text", true, Colors::black, 2);
-	obj_container.spawn_as<Text_Button>("extra_text", "extra_text", tex_mgr, middle.x, middle.y , screen_scale_factor, false, 1, 3);
+	obj_container.spawn_as<Text_Button>("extra_text", "extra_text", tex_mgr, middle.x + (middle.x / 4), middle.y + (middle.y / 16), screen_scale_factor, false, 2, 3);
+
+	obj_container.spawn_as<GameObject_cluster>("design", "design", tex_mgr, middle.x - ((tex_mgr.get_texture("cim")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("cim")->h / 2)) / 3, screen_scale_factor, false, 1);
+
+	tex_mgr.create_text_texture("result_text", "fonts/ARIAL.TTF", 48, "SCORE: NONE", Colors::black);
+	obj_container.spawn_as<Text_Button>("result_text", "result_text", tex_mgr, 0, 0, screen_scale_factor, false, -1);
+
+	tex_mgr.create_text_texture("win_counter", "fonts/ARIAL.TTF", 48, "0", Colors::black);
+	obj_container.spawn_as<Text_Button>("win_counter", "win_counter", tex_mgr, 0, 0, screen_scale_factor, false, -1);
+
+	tex_mgr.create_text_texture("tie_counter", "fonts/ARIAL.TTF", 48, "0", Colors::black);
+	obj_container.spawn_as<Text_Button>("tie_counter", "tie_counter", tex_mgr, 0, 0, screen_scale_factor, false, -1);
+
+	tex_mgr.create_text_texture("lose_counter", "fonts/ARIAL.TTF", 48, "0", Colors::black);
+	obj_container.spawn_as<Text_Button>("lose_counter", "lose_counter", tex_mgr, 0, 0, screen_scale_factor, false, -1);
+
+	GameObject_cluster& box = *obj_container.get<GameObject_cluster>("design");
+	box.add_item_local(*obj_container.get("result_text"), 2* percent.x, 3* percent.y, true);
+	box.add_item_local(*obj_container.get("win_counter"), (middle.x - 5*percent.x), 3 * percent.y, true);
+	box.add_item_local(*obj_container.get("tie_counter"), (middle.x - 5 * percent.x), (tenth.y + 1.5*percent.y), true);
+	box.add_item_local(*obj_container.get("lose_counter"), (middle.x - 5 * percent.x), (2*tenth.y - percent.y), true);
 
 	run = true;
 }
@@ -200,14 +226,13 @@ void Game::handleEvents() {
 			if (e.button.button == SDL_BUTTON_LEFT) {
 				SDL_FPoint W = WindowToWorld(renderer, e.button.x, e.button.y, cam);
 				if (auto* hit = obj_container.pick_topmost(W.x, W.y)) {
-					int result = hit->action();
+					result = hit->action();
 					if (result >= -1 && result < 2) {
 						player1.add_stat(result);
 						need_update = true;
 						current_scene = 1;
 					}
 					if (result == 3) {
-						player1.add_stat(result);
 						need_update = true;
 						current_scene = 0;
 					}
@@ -239,10 +264,24 @@ void Game::handleEvents() {
 void Game::update(double dtSeconds) {
 	//cnt++;
 	if (need_update) {
+		Text_Button& score_text = *obj_container.get<Text_Button>("result_text");
+		if (result == 1) {
+			score_text.set_text("YOU WON!");
+			obj_container.get<Text_Button>("win_counter")->set_text(std::to_string(player1.wins));
+		} else if (result == 0) {
+			score_text.set_text("YOU TIE!");
+			obj_container.get<Text_Button>("tie_counter")->set_text(std::to_string(player1.draws));
+		} else if (result == -1) {
+			score_text.set_text("you lose :(");
+			obj_container.get<Text_Button>("lose_counter")->set_text(std::to_string(player1.losses));
+		}
+
 		if (current_scene == 1) {
 			obj_container.layer_switch(1, true);
+			obj_container.layer_switch(2, true);
 		} else if (current_scene == 0) {
 			obj_container.layer_switch(1, false);
+			obj_container.layer_switch(2, false);
 		}
 		obj_container.rebuild_order();
 		need_update = false;

@@ -38,3 +38,4 @@
 /SDL3_ttf
 cpp_floppa_game.vcxproj.filters
 cpp_floppa_game.vcxproj.user
+*.pdn

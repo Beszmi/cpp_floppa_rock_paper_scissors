@@ -8,7 +8,7 @@ int main(int argc, char *argv[]) {
 	const double target_dt = 1.0 / fps_max;
 
 	Game game1;
-	game1.init("EPIC FLOPPA ROCK PAPER SCISSORS", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1920, 1080, false);
+	game1.init("EPIC FLOPPA ROCK PAPER SCISSORS", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 3840, 2160, false);
 	Uint64 now = SDL_GetPerformanceCounter();
 	Uint64 last = now;
 	const double freq = static_cast<double>(SDL_GetPerformanceFrequency());
