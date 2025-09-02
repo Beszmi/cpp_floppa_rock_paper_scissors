@@ -165,6 +165,14 @@ void Game_obj_container::set_scale_all(float new_scale) {
 	}
 }
 
+void Game_obj_container::layer_switch(int layer, bool enabled) {
+	for (auto& [_, obj] : objects) {
+		if (obj->get_layer() == layer) {
+			obj->set_show(enabled);
+		}
+	}
+}
+
 GameObject* Game_obj_container::pick_topmost(float wx, float wy) const {
 	if (order_dirty) { rebuild_order(); order_dirty = false; }
 	for (auto it = render_order_.rbegin(); it != render_order_.rend(); ++it) {
@@ -236,17 +244,32 @@ void Button::on_hover_exit(SDL_Cursor* default_cursor) {
 
 // TEXT BUTTONS
 
-Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, float scale, bool show_it, int layer_in) 
-	: GameObject(name, texture, tex_mgr_in, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {}
+Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, float scale, bool show_it, int layer_in, int variable)
+	: Button(name, texture, tex_mgr_in, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {
+	var = variable;
+}
 
-Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, int x, int y, float scale, bool show_it, int layer_in)
-	: GameObject(name, texture, tex_mgr_in, x, y, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {}
+Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, int x, int y, float scale, bool show_it, int layer_in, int variable)
+	: Button(name, texture, tex_mgr_in, x, y, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {
+	var = variable;
+}
 
-Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, GameObject_cluster* prn, float scale, bool show_it, int layer_in) 
-	: GameObject(name, texture, tex_mgr_in, prn, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {}
+Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, GameObject_cluster* prn, float scale, bool show_it, int layer_in, int variable)
+	: Button(name, texture, tex_mgr_in, prn, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {
+	var = variable;
+}
 
-Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, int x, int y, GameObject_cluster* prn, float scale, bool show_it, int layer_in)
-	: GameObject(name, texture, tex_mgr_in, x, y, prn, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {}
+Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, int x, int y, GameObject_cluster* prn, float scale, bool show_it, int layer_in, int variable)
+	: Button(name, texture, tex_mgr_in, x, y, prn, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {
+	var = variable;
+}
+
+int Text_Button::action() {
+	if (var > -1 && var < 3) {
+		return rps::play(var);
+	}
+	return var;
+}
 
 void Text_Button::update(double dt, double speed) {
 	GameObject::update(0.0, 0.0);
@@ -405,6 +428,7 @@ void sprite::render(SDL_Renderer* ren, const Camera& cam) const {
 	}
 }
 
-void sprite::action() {
+int sprite::action() {
 	active = true;
+	return -999;
 }

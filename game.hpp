@@ -8,7 +8,6 @@
 #include <SDL3_ttf/SDL_ttf.h>
 #include "graphic_components/texture_manager.hpp"
 #include "game_obj.hpp"
-#include "graphic_components/tilemap.hpp"
 #include "graphic_components/camera.hpp"
 #include "text.hpp"
 
@@ -19,7 +18,6 @@ class Game {
 	SDL_Renderer* renderer;
 	texture_manager tex_mgr;
 	Game_obj_container obj_container;
-	std::vector<std::unique_ptr<tilemap>> maps;
 	int screen_w, screen_h;
 	Camera cam;
 	float screen_scale_factor = 1.0f;
@@ -31,6 +29,10 @@ class Game {
 	bool holding = false;
 	SDL_Cursor* default_cursor;
 	SDL_Cursor* pointer_cursor;
+	bool need_update = false;
+	int result;
+	player_stats player1;
+	int current_scene = 0;
 public:
 	Game();
 	~Game();

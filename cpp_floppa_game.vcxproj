@@ -139,19 +139,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="gameplay.cpp" />
     <ClCompile Include="game_obj.cpp" />
     <ClCompile Include="graphic_components\sprites.cpp" />
     <ClCompile Include="graphic_components\texture_manager.cpp" />
-    <ClCompile Include="graphic_components\tilemap.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.hpp" />
+    <ClInclude Include="gameplay.hpp" />
     <ClInclude Include="game_obj.hpp" />
     <ClInclude Include="graphic_components\camera.hpp" />
     <ClInclude Include="graphic_components\sprites.hpp" />
     <ClInclude Include="graphic_components\texture_manager.hpp" />
-    <ClInclude Include="graphic_components\tilemap.hpp" />
     <ClInclude Include="text.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

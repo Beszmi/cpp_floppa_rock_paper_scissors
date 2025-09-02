@@ -114,29 +114,32 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	tex_mgr.load_textures_from_folder("assets/sprites");
 
 	obj_container.spawn_as<streched_bg_obj>("-", "-", tex_mgr, 1.0f, true, -1);
+	streched_bg_obj& floppa = *obj_container.get<streched_bg_obj>("-");
+	floppa.init("floppa", tex_mgr, screen_w, screen_h);
 
 	SDL_FPoint middle = ScreenPercentToWindow(renderer, 0.5f, 0.5f);
 	tex_mgr.create_text_texture("cim", "fonts/ARIAL.TTF", 72, "FLOPPA ROCK PAPER SCISSORS", Colors::red);
 	obj_container.spawn_as<Button>("cim", "cim", tex_mgr, middle.x - ((tex_mgr.get_texture("cim")->w / 2) * screen_scale_factor), (middle.y-(tex_mgr.get_texture("cim")->h / 2))/16, screen_scale_factor, true, 0);
 
-	tex_mgr.create_text_texture("rock_test", "fonts/ARIAL.TTF", 48, "ROCK", Colors::white);
-	tex_mgr.set_text_background("rock_test", true, Colors::light_grey, 4, 4);
-	tex_mgr.set_text_border("rock_test", true, Colors::black, 2);
-	obj_container.spawn_as<Text_Button>("rock_test", "rock_test", tex_mgr, middle.x - (middle.x / 2) - ((tex_mgr.get_texture("rock_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("rock_test")->h / 2)) * 1.5, screen_scale_factor, true, 0);
+	tex_mgr.create_text_texture("rock_text", "fonts/ARIAL.TTF", 48, "ROCK", Colors::white);
+	tex_mgr.set_text_background("rock_text", true, Colors::light_grey, 4, 4);
+	tex_mgr.set_text_border("rock_text", true, Colors::black, 2);
+	obj_container.spawn_as<Text_Button>("rock_text", "rock_text", tex_mgr, middle.x - (middle.x / 2) - ((tex_mgr.get_texture("rock_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("rock_test")->h / 2)) * 1.5, screen_scale_factor, true, 0, 0);
 
-	tex_mgr.create_text_texture("paper_test", "fonts/ARIAL.TTF", 48, "PAPER", Colors::white);
-	tex_mgr.set_text_background("paper_test", true, Colors::light_grey, 4, 4);
-	tex_mgr.set_text_border("paper_test", true, Colors::black, 2);
-	obj_container.spawn_as<Text_Button>("paper_test", "paper_test", tex_mgr, middle.x - ((tex_mgr.get_texture("paper_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("paper_test")->h / 2)) * 1.5, screen_scale_factor, true, 0);
+	tex_mgr.create_text_texture("paper_text", "fonts/ARIAL.TTF", 48, "PAPER", Colors::white);
+	tex_mgr.set_text_background("paper_text", true, Colors::light_grey, 4, 4);
+	tex_mgr.set_text_border("paper_text", true, Colors::black, 2);
+	obj_container.spawn_as<Text_Button>("paper_test", "paper_text", tex_mgr, middle.x - ((tex_mgr.get_texture("paper_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("paper_test")->h / 2)) * 1.5, screen_scale_factor, true, 0, 1);
 
-	tex_mgr.create_text_texture("scissors_test", "fonts/ARIAL.TTF", 48, "SCISSORS", Colors::white);
-	tex_mgr.set_text_background("scissors_test", true, Colors::light_grey, 4, 4);
-	tex_mgr.set_text_border("scissors_test", true, Colors::black, 2);
-	obj_container.spawn_as<Text_Button>("scissors_test", "scissors_test", tex_mgr, middle.x + (middle.x / 2) - ((tex_mgr.get_texture("scissors_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("scissors_test")->h / 2)) * 1.5, screen_scale_factor, true, 0);
+	tex_mgr.create_text_texture("scissors_text", "fonts/ARIAL.TTF", 48, "SCISSORS", Colors::white);
+	tex_mgr.set_text_background("scissors_text", true, Colors::light_grey, 4, 4);
+	tex_mgr.set_text_border("scissors_text", true, Colors::black, 2);
+	obj_container.spawn_as<Text_Button>("scissors_text", "scissors_text", tex_mgr, middle.x + (middle.x / 2) - ((tex_mgr.get_texture("scissors_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("scissors_test")->h / 2)) * 1.5, screen_scale_factor, true, 0, 2);
 
-
-	streched_bg_obj& floppa = *obj_container.get<streched_bg_obj>("-");
-	floppa.init("floppa", tex_mgr, screen_w, screen_h);
+	tex_mgr.create_text_texture("extra_text", "fonts/ARIAL.TTF", 48, "EXTRA BUTTON", Colors::white);
+	tex_mgr.set_text_background("extra_text", true, Colors::light_grey, 4, 4);
+	tex_mgr.set_text_border("extra_text", true, Colors::black, 2);
+	obj_container.spawn_as<Text_Button>("extra_text", "extra_text", tex_mgr, middle.x, middle.y , screen_scale_factor, false, 1, 3);
 
 	run = true;
 }
@@ -197,7 +200,17 @@ void Game::handleEvents() {
 			if (e.button.button == SDL_BUTTON_LEFT) {
 				SDL_FPoint W = WindowToWorld(renderer, e.button.x, e.button.y, cam);
 				if (auto* hit = obj_container.pick_topmost(W.x, W.y)) {
-					hit->action();
+					int result = hit->action();
+					if (result > -1 && result < 3) {
+						player1.add_stat(result);
+						need_update = true;
+						current_scene = 1;
+					}
+					if (result == 3) {
+						player1.add_stat(result);
+						need_update = true;
+						current_scene = 0;
+					}
 				}
 			}
 			//mouse.clicks[b] = e.button.clicks;
@@ -225,6 +238,15 @@ void Game::handleEvents() {
 
 void Game::update(double dtSeconds) {
 	//cnt++;
+	if (need_update) {
+		if (current_scene == 1) {
+			obj_container.layer_switch(1, true);
+		} else if (current_scene == 0) {
+			obj_container.layer_switch(1, false);
+		}
+		obj_container.rebuild_order();
+		need_update = false;
+	}
 	obj_container.update_all(dtSeconds);
 }
 
@@ -236,9 +258,6 @@ void Game::render() {
 		SDL_ClearError();
 	}
 	SDL_SetRenderScale(renderer, cam.zoom, cam.zoom);
-	for (auto& m : maps) {
-		m->render(renderer, cam);
-	}
 
 	obj_container.render_all(renderer, cam);
 
