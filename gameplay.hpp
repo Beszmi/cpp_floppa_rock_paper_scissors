@@ -2,6 +2,7 @@
 #ifndef gameplay_hpp
 #define gameplay_hpp
 #include <iostream>
+#include <fstream>
 
 
 // 0 rock; 1 paper; 2 scissors
@@ -14,5 +15,10 @@ struct player_stats {
 	size_t wins, losses, draws;
 	void add_stat(int input);
 };
+
+namespace file_managemenet {
+	bool read_data();
+	bool write_data();
+}
 
 #endif

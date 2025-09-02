@@ -265,8 +265,10 @@ Text_Button::Text_Button(const std::string& name, const std::string& texture, te
 }
 
 int Text_Button::action() {
-	if (var > -1 && var < 3) {
-		return rps::play(var);
+	if (is_enabled()) {
+		if (var > -1 && var < 3) {
+			return rps::play(var);
+		}
 	}
 	return var;
 }

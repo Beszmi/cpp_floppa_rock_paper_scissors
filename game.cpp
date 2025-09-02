@@ -51,8 +51,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 		if (SDL_DisplayID did = SDL_GetPrimaryDisplay()) {
 			SDL_Rect usable{};
 			if (SDL_GetDisplayUsableBounds(did, &usable)) {
-				target_w = 1920; //usable.w;
-				target_h = 1080; //usable.h - topBorder;
+				target_w = usable.w;
+				target_h = usable.h - topBorder;
 				target_x = usable.x;
 				target_y = usable.y + topBorder;
 			}
@@ -145,7 +145,12 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	tex_mgr.create_text_texture("extra_text", "fonts/ARIAL.TTF", 48, "PLAY AGAIN", Colors::white);
 	tex_mgr.set_text_background("extra_text", true, Colors::light_grey, 4, 4);
 	tex_mgr.set_text_border("extra_text", true, Colors::black, 2);
-	obj_container.spawn_as<Text_Button>("extra_text", "extra_text", tex_mgr, middle.x + (middle.x / 4), middle.y + (middle.y / 16), screen_scale_factor, false, 2, 3);
+	obj_container.spawn_as<Text_Button>("extra_text", "extra_text", tex_mgr, middle.x + (middle.x / 4), middle.y + (middle.y / 12), screen_scale_factor, false, 2, 3);
+
+	tex_mgr.create_text_texture("finish_text", "fonts/ARIAL.TTF", 48, "SAVE & QUIT", Colors::white);
+	tex_mgr.set_text_background("finish_text", true, Colors::light_grey, 4, 4);
+	tex_mgr.set_text_border("finish_text", true, Colors::black, 2);
+	obj_container.spawn_as<Text_Button>("finish_text", "finish_text", tex_mgr, (2*tenth.x + percent.x), (middle.y + (middle.y / 12)), screen_scale_factor, false, 2, 4);
 
 	obj_container.spawn_as<GameObject_cluster>("design", "design", tex_mgr, middle.x - ((tex_mgr.get_texture("cim")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("cim")->h / 2)) / 3, screen_scale_factor, false, 1);
 
@@ -227,14 +232,20 @@ void Game::handleEvents() {
 				SDL_FPoint W = WindowToWorld(renderer, e.button.x, e.button.y, cam);
 				if (auto* hit = obj_container.pick_topmost(W.x, W.y)) {
 					result = hit->action();
-					if (result >= -1 && result < 2) {
-						player1.add_stat(result);
-						need_update = true;
-						current_scene = 1;
+					if (static_cast<Text_Button*>(hit)->is_enabled()) {
+						if (result >= -1 && result < 2) {
+							player1.add_stat(result);
+							need_update = true;
+							current_scene = 1;
+						}
 					}
 					if (result == 3) {
 						need_update = true;
 						current_scene = 0;
+					}
+					if (result == 4) {
+						need_update = true;
+						current_scene = -1;
 					}
 				}
 			}
@@ -279,7 +290,18 @@ void Game::update(double dtSeconds) {
 		if (current_scene == 1) {
 			obj_container.layer_switch(1, true);
 			obj_container.layer_switch(2, true);
+			obj_container.get<Text_Button>("rock_text")->switch_enable(false);
+			obj_container.get<Text_Button>("paper_text")->switch_enable(false);
+			obj_container.get<Text_Button>("scissors_text")->switch_enable(false);
 		} else if (current_scene == 0) {
+			obj_container.layer_switch(1, false);
+			obj_container.layer_switch(2, false);
+			obj_container.get<Text_Button>("rock_text")->switch_enable(true);
+			obj_container.get<Text_Button>("paper_text")->switch_enable(true);
+			obj_container.get<Text_Button>("scissors_text")->switch_enable(true);
+		}
+		else if (current_scene == -1) {
+			obj_container.layer_switch(0, false);
 			obj_container.layer_switch(1, false);
 			obj_container.layer_switch(2, false);
 		}

@@ -32,3 +32,12 @@ void player_stats::add_stat(int input) {
 		break;
 	}
 }
+
+bool file_managemenet::read_data() {
+	using namespace std;
+	ifstream file("data/player_data.csv");
+}
+
+bool file_managemenet::write_data() {
+
+}
