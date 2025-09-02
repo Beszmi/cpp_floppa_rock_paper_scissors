@@ -124,17 +124,17 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	tex_mgr.create_text_texture("rock_text", "fonts/ARIAL.TTF", 48, "ROCK", Colors::white);
 	tex_mgr.set_text_background("rock_text", true, Colors::light_grey, 4, 4);
 	tex_mgr.set_text_border("rock_text", true, Colors::black, 2);
-	obj_container.spawn_as<Text_Button>("rock_text", "rock_text", tex_mgr, middle.x - (middle.x / 2) - ((tex_mgr.get_texture("rock_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("rock_test")->h / 2)) * 1.5, screen_scale_factor, true, 0, 0);
+	obj_container.spawn_as<Text_Button>("rock_text", "rock_text", tex_mgr, middle.x - (middle.x / 2) - ((tex_mgr.get_texture("rock_text")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("rock_text")->h / 2)) * 1.5, screen_scale_factor, true, 0, 0);
 
 	tex_mgr.create_text_texture("paper_text", "fonts/ARIAL.TTF", 48, "PAPER", Colors::white);
 	tex_mgr.set_text_background("paper_text", true, Colors::light_grey, 4, 4);
 	tex_mgr.set_text_border("paper_text", true, Colors::black, 2);
-	obj_container.spawn_as<Text_Button>("paper_test", "paper_text", tex_mgr, middle.x - ((tex_mgr.get_texture("paper_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("paper_test")->h / 2)) * 1.5, screen_scale_factor, true, 0, 1);
+	obj_container.spawn_as<Text_Button>("paper_test", "paper_text", tex_mgr, middle.x - ((tex_mgr.get_texture("paper_text")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("paper_text")->h / 2)) * 1.5, screen_scale_factor, true, 0, 1);
 
 	tex_mgr.create_text_texture("scissors_text", "fonts/ARIAL.TTF", 48, "SCISSORS", Colors::white);
 	tex_mgr.set_text_background("scissors_text", true, Colors::light_grey, 4, 4);
 	tex_mgr.set_text_border("scissors_text", true, Colors::black, 2);
-	obj_container.spawn_as<Text_Button>("scissors_text", "scissors_text", tex_mgr, middle.x + (middle.x / 2) - ((tex_mgr.get_texture("scissors_test")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("scissors_test")->h / 2)) * 1.5, screen_scale_factor, true, 0, 2);
+	obj_container.spawn_as<Text_Button>("scissors_text", "scissors_text", tex_mgr, middle.x + (middle.x / 2) - ((tex_mgr.get_texture("scissors_text")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("scissors_text")->h / 2)) * 1.5, screen_scale_factor, true, 0, 2);
 
 	tex_mgr.create_text_texture("extra_text", "fonts/ARIAL.TTF", 48, "EXTRA BUTTON", Colors::white);
 	tex_mgr.set_text_background("extra_text", true, Colors::light_grey, 4, 4);
@@ -201,7 +201,7 @@ void Game::handleEvents() {
 				SDL_FPoint W = WindowToWorld(renderer, e.button.x, e.button.y, cam);
 				if (auto* hit = obj_container.pick_topmost(W.x, W.y)) {
 					int result = hit->action();
-					if (result > -1 && result < 3) {
+					if (result >= -1 && result < 2) {
 						player1.add_stat(result);
 						need_update = true;
 						current_scene = 1;
@@ -246,6 +246,7 @@ void Game::update(double dtSeconds) {
 		}
 		obj_container.rebuild_order();
 		need_update = false;
+		std::cout << "current results for " << player1.name << ": wins: " << player1.wins << " draws: " << player1.draws << " losses: " << player1.losses << std::endl;
 	}
 	obj_container.update_all(dtSeconds);
 }

@@ -9,10 +9,9 @@ namespace rps {
 	int play(int input);
 }
 
-class player_stats {
+struct player_stats {
 	std::string name = "epic_gamer";
 	size_t wins, losses, draws;
-public:
 	void add_stat(int input);
 };
 
