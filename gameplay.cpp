@@ -42,11 +42,47 @@ void player_container::add_new_player(player_stat new_player) {
 	players.push_back(std::move(p));
 }
 
-bool file_managemenet::read_data(player_container& players) {
-	using namespace std;
-	ifstream file("data/player_data.csv");
+std::vector<std::string> file_managemenet::split(const std::string& str, char delimiter) {
+	std::vector<std::string> tokens;
+	size_t start = 0;
+	size_t end = str.find(delimiter);
+
+	while (end != std::string::npos) {
+		tokens.push_back(str.substr(start, end - start));
+		start = end + 1;
+		end = str.find(delimiter, start);
+	}
+
+	tokens.push_back(str.substr(start));
+	return tokens;
 }
 
-bool file_managemenet::write_data(player_container& players) {
+void file_managemenet::read_data(player_container& players) {
+	using namespace std;
+	ifstream file("data/player_data.csv");
+	if (!file) {
+		std::cerr << "couldn't open player_data.csv" << endl;
+	}
+	string line;
+	while (getline(file, line)) {
+		string name;
+		size_t file_wins, file_draws, file_losses;
+		if (line.empty()) continue;
+		auto tokens = split(line, ';');
+		name = tokens[0];
+		file_wins = stoll(tokens[1]);
+		file_draws = stoll(tokens[2]);
+		file_losses = stoll(tokens[3]);
+		players.add_new_player(player_stat(name, file_wins, file_draws, file_losses));
+	}
+	file.close();
+}
 
+void file_managemenet::write_data(player_container& players) {
+	using namespace std;
+	ofstream file("data/player_data.csv");
+	for (size_t i = 0; i < players.get_size(); i++) {
+		file << players[i]->name << ";" << players[i]->wins << ";" << players[i]->draws << ";" << players[i]->losses << endl;
+	}
+	file.close();
 }

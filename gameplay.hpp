@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <string>
 
 
 // 0 rock; 1 paper; 2 scissors
@@ -28,6 +29,7 @@ public:
 	std::unique_ptr<player_stat>& operator[](size_t idx) { return players.at(idx); }
 	size_t get_current_player_id() { return current_player; }
 	void set_current_player_id(size_t idx) { current_player = idx; }
+	size_t get_size() { return players.size(); }
 
 	void add_new_player(player_stat new_player);
 
@@ -35,8 +37,9 @@ public:
 };
 
 namespace file_managemenet {
-	bool read_data(player_container& players);
-	bool write_data(player_container& players);
+	std::vector<std::string> split(const std::string& str, char delimiter);
+	void read_data(player_container& players);
+	void write_data(player_container& players);
 }
 
 #endif

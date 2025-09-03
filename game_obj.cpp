@@ -454,7 +454,7 @@ void sprite::render(SDL_Renderer* ren, const Camera& cam) const {
 			std::cout << "sprite currently rendering id too large" << std::endl;
 		}
 		else {
-			elements.at(current_element)->render(ren, &get_src_rect(), &get_dst_rect(), cam, 1.0f);
+			elements.at(current_element)->render(ren, &get_src_rect(), &get_dst_rect(), cam, get_scale());
 		}
 	}
 }

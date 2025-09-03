@@ -117,16 +117,30 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	streched_bg_obj& floppa = *obj_container.get<streched_bg_obj>("-");
 	floppa.init("floppa", tex_mgr, screen_w, screen_h);
 
+	file_managemenet::read_data(players);
+	players.set_current_player_id(1);
+
 	//Screen space sizes
 	SDL_FPoint middle = ScreenPercentToWindow(renderer, 0.5f, 0.5f);
 	SDL_FPoint fifth = ScreenPercentToWindow(renderer, 0.2f, 0.2f);
 	SDL_FPoint tenth = ScreenPercentToWindow(renderer, 0.1f, 0.1f);
 	SDL_FPoint percent = ScreenPercentToWindow(renderer, 0.01f, 0.01f);
-	
 
+	//perma layer
 	tex_mgr.create_text_texture("cim", "fonts/ARIAL.TTF", 72, "FLOPPA ROCK PAPER SCISSORS", Colors::red);
-	obj_container.spawn_as<Button>("cim", "cim", tex_mgr, middle.x - ((tex_mgr.get_texture("cim")->w / 2) * screen_scale_factor), (middle.y-(tex_mgr.get_texture("cim")->h / 2))/16, screen_scale_factor, true, 0);
+	obj_container.spawn_as<Button>("cim", "cim", tex_mgr, middle.x - ((tex_mgr.get_texture("cim")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("cim")->h / 2)) / 16, screen_scale_factor, true, 0);
 
+	tex_mgr.create_text_texture("finish_text", "fonts/ARIAL.TTF", 48, "SAVE & QUIT", Colors::red);
+	tex_mgr.set_text_background("finish_text", true, Colors::white, 4, 4);
+	tex_mgr.set_text_border("finish_text", true, Colors::black, 2);
+	obj_container.spawn_as<Text_Button>("finish_text", "finish_text", tex_mgr, percent.x, (screen_h - (2 * tex_mgr.get_texture("finish_text")->h) - percent.y), screen_scale_factor, true, 3, 4);
+
+	tex_mgr.create_text_texture("player_name_text", "fonts/ARIAL.TTF", 64, "Logged in as: " + players.get_player(players.get_current_player_id())->name, Colors::black);
+	tex_mgr.set_text_background("player_name_text", true, Colors::white_seethru, 4, 4);
+	obj_container.spawn_as<Text_Button>("player_name_text", "player_name_text", tex_mgr, percent.y, screen_scale_factor, true, 3, 0);
+	//------------------------------------------------------
+
+	//play layer
 	tex_mgr.create_text_texture("rock_text", "fonts/ARIAL.TTF", 48, "ROCK", Colors::white);
 	tex_mgr.set_text_background("rock_text", true, Colors::light_grey, 4, 4);
 	tex_mgr.set_text_border("rock_text", true, Colors::black, 2);
@@ -141,16 +155,23 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	tex_mgr.set_text_background("scissors_text", true, Colors::light_grey, 4, 4);
 	tex_mgr.set_text_border("scissors_text", true, Colors::black, 2);
 	obj_container.spawn_as<Text_Button>("scissors_text", "scissors_text", tex_mgr, middle.x + (middle.x / 2) - ((tex_mgr.get_texture("scissors_text")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("scissors_text")->h / 2)) * 1.5, screen_scale_factor, true, 0, 2);
+	//------------------------------------------------------
 
+	//results layer
 	tex_mgr.create_text_texture("extra_text", "fonts/ARIAL.TTF", 48, "PLAY AGAIN", Colors::white);
 	tex_mgr.set_text_background("extra_text", true, Colors::light_grey, 4, 4);
 	tex_mgr.set_text_border("extra_text", true, Colors::black, 2);
 	obj_container.spawn_as<Text_Button>("extra_text", "extra_text", tex_mgr, middle.x + (middle.x / 4), middle.y + (middle.y / 12), screen_scale_factor, false, 2, 3);
 
-	tex_mgr.create_text_texture("finish_text", "fonts/ARIAL.TTF", 48, "SAVE & QUIT", Colors::white);
-	tex_mgr.set_text_background("finish_text", true, Colors::light_grey, 4, 4);
-	tex_mgr.set_text_border("finish_text", true, Colors::black, 2);
-	obj_container.spawn_as<Text_Button>("finish_text", "finish_text", tex_mgr, (2*tenth.x + percent.x), (middle.y + (middle.y / 12)), screen_scale_factor, false, 2, 4);
+	obj_container.spawn_as<sprite>("explosion", "-", tex_mgr, middle.x - (middle.x / 2), middle.y - (middle.y / 3 + 3*percent.y), screen_scale_factor * 0.2, false, 2);
+
+	sprite& explosion = *obj_container.get<sprite>("explosion");
+
+	for (int i = 1;; ++i) {
+		std::string key = "sprites/s" + std::to_string(i);
+		if (!tex_mgr.has(key)) break;
+		explosion.add_element(key, tex_mgr);
+	}
 
 	obj_container.spawn_as<GameObject_cluster>("design", "design", tex_mgr, middle.x - ((tex_mgr.get_texture("cim")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("cim")->h / 2)) / 3, screen_scale_factor, false, 1);
 
@@ -171,8 +192,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	box.add_item_local(*obj_container.get("win_counter"), (middle.x - 5*percent.x), 3 * percent.y, true);
 	box.add_item_local(*obj_container.get("tie_counter"), (middle.x - 5 * percent.x), (tenth.y + 1.5*percent.y), true);
 	box.add_item_local(*obj_container.get("lose_counter"), (middle.x - 5 * percent.x), (2*tenth.y - percent.y), true);
-
-	players.add_new_player(player_stat("Laci"));
+	//------------------------------------------------------
 
 	run = true;
 }
@@ -290,23 +310,33 @@ void Game::update(double dtSeconds) {
 			obj_container.get<Text_Button>("lose_counter")->set_text(std::to_string(active_player.losses));
 		}
 
-		if (current_scene == 1) {
+		if (current_scene == 1) { // results screen
 			obj_container.layer_switch(1, true);
 			obj_container.layer_switch(2, true);
 			obj_container.get<Text_Button>("rock_text")->switch_enable(false);
 			obj_container.get<Text_Button>("paper_text")->switch_enable(false);
 			obj_container.get<Text_Button>("scissors_text")->switch_enable(false);
-		} else if (current_scene == 0) {
+		} 
+		else if (current_scene == 0) { //play screen
 			obj_container.layer_switch(1, false);
 			obj_container.layer_switch(2, false);
 			obj_container.get<Text_Button>("rock_text")->switch_enable(true);
 			obj_container.get<Text_Button>("paper_text")->switch_enable(true);
 			obj_container.get<Text_Button>("scissors_text")->switch_enable(true);
-		}
-		else if (current_scene == -1) {
+		} 
+		else if (current_scene == -1) { //quit
 			obj_container.layer_switch(0, false);
 			obj_container.layer_switch(1, false);
 			obj_container.layer_switch(2, false);
+			obj_container.layer_switch(3, false);
+			file_managemenet::write_data(players);
+			run = false;
+		}
+		else if (current_scene == 2) { //main menu
+			obj_container.layer_switch(0, false);
+			obj_container.layer_switch(1, false);
+			obj_container.layer_switch(2, false);
+			obj_container.layer_switch(3, false);
 		}
 		obj_container.rebuild_order();
 		need_update = false;

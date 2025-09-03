@@ -206,7 +206,7 @@ public:
 
 class sprite : public GameObject {
 	std::vector<std::unique_ptr<sprite_component>> elements;
-	int state = -4; //states in docs
+	int state = 1; //states in docs
 	int current_element = 0;
 	double t = 0;
 	double tick_time = 0.25;
