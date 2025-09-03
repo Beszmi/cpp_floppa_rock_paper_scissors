@@ -133,7 +133,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	tex_mgr.create_text_texture("finish_text", "fonts/ARIAL.TTF", 48, "SAVE & QUIT", Colors::red);
 	tex_mgr.set_text_background("finish_text", true, Colors::white, 4, 4);
 	tex_mgr.set_text_border("finish_text", true, Colors::black, 2);
-	obj_container.spawn_as<Text_Button>("finish_text", "finish_text", tex_mgr, percent.x, (screen_h - (2 * tex_mgr.get_texture("finish_text")->h) - percent.y), screen_scale_factor, true, 9, 4);
+	obj_container.spawn_as<Text_Button>("finish_text", "finish_text", tex_mgr, screen_w - tex_mgr.get_texture("finish_text")->w * 2 - percent.x, percent.y, screen_scale_factor, true, 9, 4);
 
 	tex_mgr.create_text_texture("player_name_text", "fonts/ARIAL.TTF", 64, "Logged in as: " + players.get_player(players.get_current_player_id())->name, Colors::black);
 	tex_mgr.set_text_background("player_name_text", true, Colors::white_seethru, 4, 4);
@@ -177,6 +177,11 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	tex_mgr.set_text_background("scissors_text", true, Colors::light_grey, 4, 4);
 	tex_mgr.set_text_border("scissors_text", true, Colors::black, 2);
 	obj_container.spawn_as<Text_Button>("scissors_text", "scissors_text", tex_mgr, middle.x + (middle.x / 2) - ((tex_mgr.get_texture("scissors_text")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("scissors_text")->h / 2)) * 1.5, screen_scale_factor, true, 0, 2);
+
+	tex_mgr.create_text_texture("main_menu_button", "fonts/ARIAL.TTF", 48, "MAIN MENU", Colors::white);
+	tex_mgr.set_text_background("main_menu_button", true, Colors::light_grey, 4, 4);
+	tex_mgr.set_text_border("main_menu_button", true, Colors::black, 2);
+	obj_container.spawn_as<Text_Button>("main_menu_button", "main_menu_button", tex_mgr, percent.x, (screen_h - (2 * tex_mgr.get_texture("main_menu_button")->h) - percent.y), screen_scale_factor, true, 0, 6);
 	//------------------------------------------------------
 
 	//results layer
@@ -291,6 +296,10 @@ void Game::handleEvents() {
 						need_update = true;
 						current_scene = -1;
 					}
+					if (result == 6) {
+						need_update = true;
+						current_scene = 2;
+					}
 					if (result > 99) {
 						need_update = true;
 						current_scene = 2;
@@ -382,6 +391,8 @@ void Game::update(double dtSeconds) {
 			obj_container.layer_switch(1, false);
 			obj_container.layer_switch(2, false);
 			obj_container.layer_switch(9, true);
+			obj_container.layer_switch(5, true);
+			obj_container.layer_switch(6, true);
 			obj_container.layer_switch(10, true); //title
 			obj_container.get<Text_Button>("player_name_text")->set_text("Logged in as: " + players.get_player(players.get_current_player_id())->name);
 		}
