@@ -288,13 +288,21 @@ void Game::handleEvents() {
 							current_scene = 1;
 						}
 					}
-					if (result == 3 || result == 5) { //to play scene
+					if (result == 3) { //to play scene
 						need_update = true;
 						current_scene = 0;
 					}
 					if (result == 4) {
 						need_update = true;
 						current_scene = -1;
+					}
+					if (result == 5) { //to play scene menu play button
+						player_stat& active_player = *players.get_player(players.get_current_player_id());
+						obj_container.get<Text_Button>("win_counter")->set_text(std::to_string(active_player.wins));
+						obj_container.get<Text_Button>("tie_counter")->set_text(std::to_string(active_player.draws));
+						obj_container.get<Text_Button>("lose_counter")->set_text(std::to_string(active_player.losses));
+						need_update = true;
+						current_scene = 0;
 					}
 					if (result == 6) {
 						need_update = true;
@@ -348,12 +356,15 @@ void Game::update(double dtSeconds) {
 		player_stat& active_player = *players.get_player(players.get_current_player_id());
 		Text_Button& score_text = *obj_container.get<Text_Button>("result_text");
 		if (result == 1) {
+			obj_container.get<sprite>("explosion")->set_state(1);
 			score_text.set_text("YOU WON!");
 			obj_container.get<Text_Button>("win_counter")->set_text(std::to_string(active_player.wins));
 		} else if (result == 0) {
+			obj_container.get<sprite>("explosion")->set_state(0);
 			score_text.set_text("YOU TIE!");
 			obj_container.get<Text_Button>("tie_counter")->set_text(std::to_string(active_player.draws));
 		} else if (result == -1) {
+			obj_container.get<sprite>("explosion")->set_state(-1);
 			score_text.set_text("you lose :(");
 			obj_container.get<Text_Button>("lose_counter")->set_text(std::to_string(active_player.losses));
 		}
