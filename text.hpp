@@ -16,7 +16,7 @@ namespace Colors {
     inline constexpr SDL_Color black = rgb(0, 0, 0);
     inline constexpr SDL_Color red = rgb(220, 38, 38);
     inline constexpr SDL_Color dark_green = rgb(0, 120, 0);
-    inline constexpr SDL_Color green = rgb(16, 185, 129);
+    inline constexpr SDL_Color green = rgb(0, 185, 0);
     inline constexpr SDL_Color dark_blue = rgb(0, 0, 120);
     inline constexpr SDL_Color blue = rgb(59, 130, 246);
     inline constexpr SDL_Color violet = rgb(255, 0, 255);

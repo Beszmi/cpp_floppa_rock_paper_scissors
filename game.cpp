@@ -147,10 +147,10 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 
 	obj_container.spawn_as<GameObject>("menu", "menu", tex_mgr, middle.x - ((tex_mgr.get_texture("menu")->w / 2) * screen_scale_factor), middle.y / 2, screen_scale_factor,true, 5);
 
-	tex_mgr.create_text_texture("start_text", "fonts/ARIAL.TTF", 48, "PLAY", Colors::white);
-	tex_mgr.set_text_background("start_text", true, Colors::light_grey, 4, 4);
+	tex_mgr.create_text_texture("start_text", "fonts/ARIAL.TTF", 72, "PLAY", Colors::white);
+	tex_mgr.set_text_background("start_text", true, Colors::green, 4, 4);
 	tex_mgr.set_text_border("start_text", true, Colors::black, 2);
-	obj_container.spawn_as<Text_Button>("start_text", "start_text", tex_mgr, middle.x + (middle.x / 2), middle.y + (middle.y / 3), screen_scale_factor, true, 6, 5);
+	obj_container.spawn_as<Text_Button>("start_text", "start_text", tex_mgr, (middle.x - (tex_mgr.get_texture("start_text")->w)), (middle.y + (middle.y / 2) + 6*percent.y), screen_scale_factor, true, 6, 5);
 
 	size_t index = 0;
 	for (index = 0; index < players.get_vector().size(); index++) {
@@ -161,8 +161,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 		SDL_Color bg_color = Colors::rgb(r_rand, g_rand, b_rand);
 		tex_mgr.set_text_background("play_text" + index, true, bg_color, 4, 4);
 		tex_mgr.set_text_border("play_text" + index, true, Colors::black, 2);
-		obj_container.spawn_as<Text_Button>("play_text" + index, "play_text" + index, tex_mgr, (middle.x - 1.6 * fifth.x), ((middle.y - 1.2 * fifth.y) + (tex_mgr.get_texture("play_text" + index)->h) * (2.5*index)), screen_scale_factor, true, 6, 100+index);
-		cout << players[index]->name << "\n";
+		obj_container.spawn_as<Text_Button>("play_text" + index, "play_text" + index, tex_mgr, (middle.x - 1.5 * fifth.x), ((middle.y - 1.05 * fifth.y) + (tex_mgr.get_texture("play_text" + index)->h) * (2.5*index)), screen_scale_factor, true, 6, 100+index);
+		cout << players[index]->name << std::endl;
 	}
 	//------------------------------------------------------
 

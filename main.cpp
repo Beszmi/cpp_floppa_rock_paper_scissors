@@ -5,7 +5,7 @@
 #include <ctime>
 
 int main(int argc, char *argv[]) {
-	const int fps_max = 120;
+	const int fps_max = 200;
 	const double target_dt = 1.0 / fps_max;
 	srand(std::time(nullptr));
 

@@ -169,6 +169,7 @@ public:
 
 class Text_Button : public Button {
 	texture_manager& tex_mgr;
+	SDL_Color default_bg_color;
 public:
 	Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, float scale = 1.0f, bool show_it = false, int layer_in = 0, int variable = 0);
 	Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, int x, int y, float scale = 1.0f, bool show_it = false, int layer_in = 0, int variable = 0);

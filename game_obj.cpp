@@ -245,22 +245,22 @@ void Button::on_hover_exit(SDL_Cursor* default_cursor) {
 // TEXT BUTTONS
 
 Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, float scale, bool show_it, int layer_in, int variable)
-	: Button(name, texture, tex_mgr_in, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {
+	: Button(name, texture, tex_mgr_in, scale, show_it, layer_in), tex_mgr(tex_mgr_in), default_bg_color(tex_mgr.get_bg_color(name)) {
 	var = variable;
 }
 
 Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, int x, int y, float scale, bool show_it, int layer_in, int variable)
-	: Button(name, texture, tex_mgr_in, x, y, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {
+	: Button(name, texture, tex_mgr_in, x, y, scale, show_it, layer_in), tex_mgr(tex_mgr_in), default_bg_color(tex_mgr.get_bg_color(name)) {
 	var = variable;
 }
 
 Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, GameObject_cluster* prn, float scale, bool show_it, int layer_in, int variable)
-	: Button(name, texture, tex_mgr_in, prn, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {
+	: Button(name, texture, tex_mgr_in, prn, scale, show_it, layer_in), tex_mgr(tex_mgr_in), default_bg_color(tex_mgr.get_bg_color(name)) {
 	var = variable;
 }
 
 Text_Button::Text_Button(const std::string& name, const std::string& texture, texture_manager& tex_mgr_in, int x, int y, GameObject_cluster* prn, float scale, bool show_it, int layer_in, int variable)
-	: Button(name, texture, tex_mgr_in, x, y, prn, scale, show_it, layer_in), tex_mgr(tex_mgr_in) {
+	: Button(name, texture, tex_mgr_in, x, y, prn, scale, show_it, layer_in), tex_mgr(tex_mgr_in), default_bg_color(tex_mgr.get_bg_color(name)) {
 	var = variable;
 }
 
@@ -296,37 +296,43 @@ void Text_Button::update(double dt, double speed) {
 }
 
 void Text_Button::on_hover_enter(SDL_Cursor* pointer_cursor) {
-	hover = true;
-	SDL_SetCursor(pointer_cursor);
-	SDL_Color new_color = tex_mgr.get_bg_color(get_name());
-	new_color.r -= 60;
-	new_color.g -= 60;
-	new_color.b -= 60;
+	if (!hover) {
+		hover = true;
+		SDL_SetCursor(pointer_cursor);
+		SDL_Color new_color = tex_mgr.get_bg_color(get_name());
+		if (new_color.r != 0) {
+			new_color.r -= std::clamp(round(new_color.r * 0.25), -60.0, 60.0);
+		}
+		if (new_color.g != 0) {
+			new_color.g -= std::clamp(round(new_color.g * 0.25), -60.0, 60.0);
+		}
+		if (new_color.b != 0) {
+			new_color.b -= std::clamp(round(new_color.b * 0.25), -60.0, 60.0);
+		}
 
-	if (tex_mgr.set_text_background_const_padding(get_name(), true, new_color)) {
-		if (auto* t = tex_mgr.get_texture(get_name())) {
-			set_texture(t);
-			float w = 0, h = 0; SDL_GetTextureSize(t, &w, &h);
-			get_src_rect() = { 0,0,w,h };
-			auto& d = get_dst_rect(); d.w = w; d.h = h;
+		if (tex_mgr.set_text_background_const_padding(get_name(), true, new_color)) {
+			if (auto* t = tex_mgr.get_texture(get_name())) {
+				set_texture(t);
+				float w = 0, h = 0; SDL_GetTextureSize(t, &w, &h);
+				get_src_rect() = { 0,0,w,h };
+				auto& d = get_dst_rect(); d.w = w; d.h = h;
+			}
 		}
 	}
 }
 
 void Text_Button::on_hover_exit(SDL_Cursor* default_cursor) {
-	hover = false;
-	SDL_SetCursor(default_cursor);
-	SDL_Color new_color = tex_mgr.get_bg_color(get_name());
-	new_color.r += 60;
-	new_color.g += 60;
-	new_color.b += 60;
+	if (hover) {
+		hover = false;
+		SDL_SetCursor(default_cursor);
 
-	if (tex_mgr.set_text_background_const_padding(get_name(), true, new_color)) {
-		if (auto* t = tex_mgr.get_texture(get_name())) {
-			set_texture(t);
-			float w = 0, h = 0; SDL_GetTextureSize(t, &w, &h);
-			get_src_rect() = { 0,0,w,h };
-			auto& d = get_dst_rect(); d.w = w; d.h = h;
+		if (tex_mgr.set_text_background_const_padding(get_name(), true, default_bg_color)) {
+			if (auto* t = tex_mgr.get_texture(get_name())) {
+				set_texture(t);
+				float w = 0, h = 0; SDL_GetTextureSize(t, &w, &h);
+				get_src_rect() = { 0,0,w,h };
+				auto& d = get_dst_rect(); d.w = w; d.h = h;
+			}
 		}
 	}
 }
