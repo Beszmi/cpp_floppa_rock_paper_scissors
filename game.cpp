@@ -155,7 +155,11 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	size_t index = 0;
 	for (index = 0; index < players.get_vector().size(); index++) {
 		tex_mgr.create_text_texture("play_text" + index, "fonts/ARIAL.TTF", 48, players[index]->name, Colors::white);
-		tex_mgr.set_text_background("play_text" + index, true, Colors::light_grey, 4, 4);
+		int r_rand = rand() / 120;
+		int g_rand = rand() / 120;
+		int b_rand = rand() / 120;
+		SDL_Color bg_color = Colors::rgb(r_rand, g_rand, b_rand);
+		tex_mgr.set_text_background("play_text" + index, true, bg_color, 4, 4);
 		tex_mgr.set_text_border("play_text" + index, true, Colors::black, 2);
 		obj_container.spawn_as<Text_Button>("play_text" + index, "play_text" + index, tex_mgr, (middle.x - 1.6 * fifth.x), ((middle.y - 1.2 * fifth.y) + (tex_mgr.get_texture("play_text" + index)->h) * (2.5*index)), screen_scale_factor, true, 6, 100+index);
 		cout << players[index]->name << "\n";

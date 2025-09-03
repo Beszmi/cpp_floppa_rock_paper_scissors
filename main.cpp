@@ -2,10 +2,12 @@
 #include <SDL3/SDL_main.h>
 #include <SDL3_image/SDL_image.h>
 #include "game.hpp"
+#include <ctime>
 
 int main(int argc, char *argv[]) {
 	const int fps_max = 120;
 	const double target_dt = 1.0 / fps_max;
+	srand(std::time(nullptr));
 
 	Game game1;
 	game1.init("EPIC FLOPPA ROCK PAPER SCISSORS", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 3840, 2160, false);
