@@ -172,6 +172,8 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	box.add_item_local(*obj_container.get("tie_counter"), (middle.x - 5 * percent.x), (tenth.y + 1.5*percent.y), true);
 	box.add_item_local(*obj_container.get("lose_counter"), (middle.x - 5 * percent.x), (2*tenth.y - percent.y), true);
 
+	players.add_new_player(player_stat("Laci"));
+
 	run = true;
 }
 
@@ -234,7 +236,7 @@ void Game::handleEvents() {
 					result = hit->action();
 					if (static_cast<Text_Button*>(hit)->is_enabled()) {
 						if (result >= -1 && result < 2) {
-							player1.add_stat(result);
+							players.get_player(players.get_current_player_id())->add_stat(result);
 							need_update = true;
 							current_scene = 1;
 						}
@@ -275,16 +277,17 @@ void Game::handleEvents() {
 void Game::update(double dtSeconds) {
 	//cnt++;
 	if (need_update) {
+		player_stat& active_player = *players.get_player(players.get_current_player_id());
 		Text_Button& score_text = *obj_container.get<Text_Button>("result_text");
 		if (result == 1) {
 			score_text.set_text("YOU WON!");
-			obj_container.get<Text_Button>("win_counter")->set_text(std::to_string(player1.wins));
+			obj_container.get<Text_Button>("win_counter")->set_text(std::to_string(active_player.wins));
 		} else if (result == 0) {
 			score_text.set_text("YOU TIE!");
-			obj_container.get<Text_Button>("tie_counter")->set_text(std::to_string(player1.draws));
+			obj_container.get<Text_Button>("tie_counter")->set_text(std::to_string(active_player.draws));
 		} else if (result == -1) {
 			score_text.set_text("you lose :(");
-			obj_container.get<Text_Button>("lose_counter")->set_text(std::to_string(player1.losses));
+			obj_container.get<Text_Button>("lose_counter")->set_text(std::to_string(active_player.losses));
 		}
 
 		if (current_scene == 1) {
@@ -307,7 +310,7 @@ void Game::update(double dtSeconds) {
 		}
 		obj_container.rebuild_order();
 		need_update = false;
-		std::cout << "current results for " << player1.name << ": wins: " << player1.wins << " draws: " << player1.draws << " losses: " << player1.losses << std::endl;
+		std::cout << "current results for " << active_player.name << ": wins: " << active_player.wins << " draws: " << active_player.draws << " losses: " << active_player.losses << std::endl;
 	}
 	obj_container.update_all(dtSeconds);
 }

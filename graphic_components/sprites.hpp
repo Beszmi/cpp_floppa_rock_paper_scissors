@@ -2,8 +2,6 @@
 #ifndef sprites_hpp
 #define sprites_hpp
 #include <memory>
-#include <string>
-#include <vector>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include "texture_manager.hpp"

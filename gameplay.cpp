@@ -15,7 +15,9 @@ int rps::play(int input) {
 	}
 }
 
-void player_stats::add_stat(int input) {
+player_stat::player_stat(std::string name, int wins, int draws, int loses): name(name), wins(wins), draws(draws), losses(loses) {}
+
+void player_stat::add_stat(int input) {
 	switch (input)
 	{
 	case 1:
@@ -33,11 +35,18 @@ void player_stats::add_stat(int input) {
 	}
 }
 
-bool file_managemenet::read_data() {
+player_container::player_container(): current_player(0) {}
+
+void player_container::add_new_player(player_stat new_player) {
+	auto p = std::make_unique<player_stat>(new_player);
+	players.push_back(std::move(p));
+}
+
+bool file_managemenet::read_data(player_container& players) {
 	using namespace std;
 	ifstream file("data/player_data.csv");
 }
 
-bool file_managemenet::write_data() {
+bool file_managemenet::write_data(player_container& players) {
 
 }

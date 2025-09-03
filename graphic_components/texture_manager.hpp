@@ -3,7 +3,6 @@
 #define texture_manager_h
 #include <iostream>
 #include <unordered_map>
-#include <vector>
 #include <string>
 #include <filesystem>
 #include <algorithm>

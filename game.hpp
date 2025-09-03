@@ -31,7 +31,7 @@ class Game {
 	SDL_Cursor* pointer_cursor;
 	bool need_update = false;
 	int result;
-	player_stats player1;
+	player_container players;
 	int current_scene = 0;
 public:
 	Game();
