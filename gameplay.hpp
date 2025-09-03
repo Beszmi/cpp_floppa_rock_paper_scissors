@@ -20,16 +20,17 @@ struct player_stat {
 };
 
 class player_container {
-	std::vector<std::unique_ptr<player_stat>> players;
+	std::vector<std::unique_ptr<player_stat>> players_vec;
 	size_t current_player;
 public:
 	player_container();
 
-	std::unique_ptr<player_stat>& get_player(size_t idx) { return players.at(idx); }
-	std::unique_ptr<player_stat>& operator[](size_t idx) { return players.at(idx); }
+	std::unique_ptr<player_stat>& get_player(size_t idx) { return players_vec.at(idx); }
+	std::unique_ptr<player_stat>& operator[](size_t idx) { return players_vec.at(idx); }
 	size_t get_current_player_id() { return current_player; }
 	void set_current_player_id(size_t idx) { current_player = idx; }
-	size_t get_size() { return players.size(); }
+	size_t get_size() { return players_vec.size(); }
+	std::vector<std::unique_ptr<player_stat>>& get_vector() { return players_vec; }
 
 	void add_new_player(player_stat new_player);
 

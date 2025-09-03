@@ -39,7 +39,7 @@ player_container::player_container(): current_player(0) {}
 
 void player_container::add_new_player(player_stat new_player) {
 	auto p = std::make_unique<player_stat>(new_player);
-	players.push_back(std::move(p));
+	players_vec.push_back(std::move(p));
 }
 
 std::vector<std::string> file_managemenet::split(const std::string& str, char delimiter) {

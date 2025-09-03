@@ -113,10 +113,6 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	tex_mgr.load_textures_from_folder("assets");
 	tex_mgr.load_textures_from_folder("assets/sprites");
 
-	obj_container.spawn_as<streched_bg_obj>("-", "-", tex_mgr, 1.0f, true, -1);
-	streched_bg_obj& floppa = *obj_container.get<streched_bg_obj>("-");
-	floppa.init("floppa", tex_mgr, screen_w, screen_h);
-
 	file_managemenet::read_data(players);
 	players.set_current_player_id(1);
 
@@ -127,17 +123,43 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	SDL_FPoint percent = ScreenPercentToWindow(renderer, 0.01f, 0.01f);
 
 	//perma layer
-	tex_mgr.create_text_texture("cim", "fonts/ARIAL.TTF", 72, "FLOPPA ROCK PAPER SCISSORS", Colors::red);
-	obj_container.spawn_as<Button>("cim", "cim", tex_mgr, middle.x - ((tex_mgr.get_texture("cim")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("cim")->h / 2)) / 16, screen_scale_factor, true, 0);
+	obj_container.spawn_as<streched_bg_obj>("-", "-", tex_mgr, 1.0f, true, -1);
+	streched_bg_obj& floppa = *obj_container.get<streched_bg_obj>("-");
+	floppa.init("floppa", tex_mgr, screen_w, screen_h);
+
+	tex_mgr.create_text_texture("title", "fonts/ARIAL.TTF", 72, "FLOPPA ROCK PAPER SCISSORS", Colors::red);
+	obj_container.spawn_as<Button>("title", "title", tex_mgr, middle.x - ((tex_mgr.get_texture("title")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("title")->h / 2)) / 16, screen_scale_factor, true, 10);
 
 	tex_mgr.create_text_texture("finish_text", "fonts/ARIAL.TTF", 48, "SAVE & QUIT", Colors::red);
 	tex_mgr.set_text_background("finish_text", true, Colors::white, 4, 4);
 	tex_mgr.set_text_border("finish_text", true, Colors::black, 2);
-	obj_container.spawn_as<Text_Button>("finish_text", "finish_text", tex_mgr, percent.x, (screen_h - (2 * tex_mgr.get_texture("finish_text")->h) - percent.y), screen_scale_factor, true, 3, 4);
+	obj_container.spawn_as<Text_Button>("finish_text", "finish_text", tex_mgr, percent.x, (screen_h - (2 * tex_mgr.get_texture("finish_text")->h) - percent.y), screen_scale_factor, true, 9, 4);
 
 	tex_mgr.create_text_texture("player_name_text", "fonts/ARIAL.TTF", 64, "Logged in as: " + players.get_player(players.get_current_player_id())->name, Colors::black);
 	tex_mgr.set_text_background("player_name_text", true, Colors::white_seethru, 4, 4);
 	obj_container.spawn_as<Text_Button>("player_name_text", "player_name_text", tex_mgr, percent.y, screen_scale_factor, true, 3, 0);
+	//------------------------------------------------------
+
+	//main menu
+	obj_container.spawn_as<streched_bg_obj>("kadfloppa", "-", tex_mgr, 1.0f, true, 4);
+	streched_bg_obj& kadfloppa = *obj_container.get<streched_bg_obj>("kadfloppa");
+	kadfloppa.init("kadfloppa", tex_mgr, screen_w, screen_h);
+
+	obj_container.spawn_as<GameObject>("menu", "menu", tex_mgr, middle.x - ((tex_mgr.get_texture("menu")->w / 2) * screen_scale_factor), middle.y / 2, screen_scale_factor,true, 5);
+
+	tex_mgr.create_text_texture("start_text", "fonts/ARIAL.TTF", 48, "PLAY", Colors::white);
+	tex_mgr.set_text_background("start_text", true, Colors::light_grey, 4, 4);
+	tex_mgr.set_text_border("start_text", true, Colors::black, 2);
+	obj_container.spawn_as<Text_Button>("start_text", "start_text", tex_mgr, middle.x + (middle.x / 2), middle.y + (middle.y / 3), screen_scale_factor, true, 6, 5);
+
+	size_t index = 0;
+	for (index = 0; index < players.get_vector().size(); index++) {
+		tex_mgr.create_text_texture("play_text" + index, "fonts/ARIAL.TTF", 48, players[index]->name, Colors::white);
+		tex_mgr.set_text_background("play_text" + index, true, Colors::light_grey, 4, 4);
+		tex_mgr.set_text_border("play_text" + index, true, Colors::black, 2);
+		obj_container.spawn_as<Text_Button>("play_text" + index, "play_text" + index, tex_mgr, (middle.x - 1.6 * fifth.x), ((middle.y - 1.2 * fifth.y) + (tex_mgr.get_texture("play_text" + index)->h) * (2.5*index)), screen_scale_factor, true, 6, 100+index);
+		cout << players[index]->name << "\n";
+	}
 	//------------------------------------------------------
 
 	//play layer
@@ -173,7 +195,7 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 		explosion.add_element(key, tex_mgr);
 	}
 
-	obj_container.spawn_as<GameObject_cluster>("design", "design", tex_mgr, middle.x - ((tex_mgr.get_texture("cim")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("cim")->h / 2)) / 3, screen_scale_factor, false, 1);
+	obj_container.spawn_as<GameObject_cluster>("design", "design", tex_mgr, middle.x - ((tex_mgr.get_texture("title")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("title")->h / 2)) / 3, screen_scale_factor, false, 1);
 
 	tex_mgr.create_text_texture("result_text", "fonts/ARIAL.TTF", 48, "SCORE: NONE", Colors::black);
 	obj_container.spawn_as<Text_Button>("result_text", "result_text", tex_mgr, 0, 0, screen_scale_factor, false, -1);
@@ -261,13 +283,30 @@ void Game::handleEvents() {
 							current_scene = 1;
 						}
 					}
-					if (result == 3) {
+					if (result == 3 || result == 5) { //to play scene
 						need_update = true;
 						current_scene = 0;
 					}
 					if (result == 4) {
 						need_update = true;
 						current_scene = -1;
+					}
+					if (result > 99) {
+						need_update = true;
+						current_scene = 2;
+						if (result - 100 > players.get_size()) {
+							std::cerr << "user range exceeded" << std::endl;
+						}
+						else {
+							players.set_current_player_id(result - 100);
+							obj_container.get<Text_Button>("play_text" + (result - 100))->set_background(true, Colors::dark_green);
+							size_t index = 0;
+							for (index = 0; index < players.get_vector().size(); index++) {
+								if (index != result - 100) {
+									tex_mgr.set_text_background("play_text" + index, true, Colors::light_grey, 4, 4);
+								}
+							}
+						}
 					}
 				}
 			}
@@ -311,6 +350,7 @@ void Game::update(double dtSeconds) {
 		}
 
 		if (current_scene == 1) { // results screen
+			obj_container.layer_switch(4, false);
 			obj_container.layer_switch(1, true);
 			obj_container.layer_switch(2, true);
 			obj_container.get<Text_Button>("rock_text")->switch_enable(false);
@@ -318,25 +358,32 @@ void Game::update(double dtSeconds) {
 			obj_container.get<Text_Button>("scissors_text")->switch_enable(false);
 		} 
 		else if (current_scene == 0) { //play screen
+			obj_container.layer_switch(0, true);
 			obj_container.layer_switch(1, false);
 			obj_container.layer_switch(2, false);
+			obj_container.layer_switch(4, false);
+			obj_container.layer_switch(5, false);
+			obj_container.layer_switch(6, false);
 			obj_container.get<Text_Button>("rock_text")->switch_enable(true);
 			obj_container.get<Text_Button>("paper_text")->switch_enable(true);
 			obj_container.get<Text_Button>("scissors_text")->switch_enable(true);
 		} 
 		else if (current_scene == -1) { //quit
+			obj_container.layer_switch(4, false);
 			obj_container.layer_switch(0, false);
 			obj_container.layer_switch(1, false);
 			obj_container.layer_switch(2, false);
-			obj_container.layer_switch(3, false);
+			obj_container.layer_switch(9, false);
 			file_managemenet::write_data(players);
 			run = false;
 		}
 		else if (current_scene == 2) { //main menu
-			obj_container.layer_switch(0, false);
+			obj_container.layer_switch(4, true);
 			obj_container.layer_switch(1, false);
 			obj_container.layer_switch(2, false);
-			obj_container.layer_switch(3, false);
+			obj_container.layer_switch(9, true);
+			obj_container.layer_switch(10, true); //title
+			obj_container.get<Text_Button>("player_name_text")->set_text("Logged in as: " + players.get_player(players.get_current_player_id())->name);
 		}
 		obj_container.rebuild_order();
 		need_update = false;

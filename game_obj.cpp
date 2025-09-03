@@ -73,7 +73,7 @@ void GameObject::set_dst_rect(double x, double y) {
 }
 
 void GameObject::update(double dt, double speed) {
-	set_loc_position(transform.localX + (speed * dt), transform.localY + (speed * dt));
+	//set_loc_position(transform.localX + (speed * dt), transform.localY + (speed * dt));
 	transform.computeWorld();
 	dst_rect.x = static_cast<float>(std::lround(transform.worldX));
 	dst_rect.y = static_cast<float>(std::lround(transform.worldY));
@@ -298,8 +298,12 @@ void Text_Button::update(double dt, double speed) {
 void Text_Button::on_hover_enter(SDL_Cursor* pointer_cursor) {
 	hover = true;
 	SDL_SetCursor(pointer_cursor);
+	SDL_Color new_color = tex_mgr.get_bg_color(get_name());
+	new_color.r -= 60;
+	new_color.g -= 60;
+	new_color.b -= 60;
 
-	if (tex_mgr.set_text_background_const_padding(get_name(), true, Colors::grey)) {
+	if (tex_mgr.set_text_background_const_padding(get_name(), true, new_color)) {
 		if (auto* t = tex_mgr.get_texture(get_name())) {
 			set_texture(t);
 			float w = 0, h = 0; SDL_GetTextureSize(t, &w, &h);
@@ -312,8 +316,12 @@ void Text_Button::on_hover_enter(SDL_Cursor* pointer_cursor) {
 void Text_Button::on_hover_exit(SDL_Cursor* default_cursor) {
 	hover = false;
 	SDL_SetCursor(default_cursor);
+	SDL_Color new_color = tex_mgr.get_bg_color(get_name());
+	new_color.r += 60;
+	new_color.g += 60;
+	new_color.b += 60;
 
-	if (tex_mgr.set_text_background_const_padding(get_name(), true, Colors::light_grey)) {
+	if (tex_mgr.set_text_background_const_padding(get_name(), true, new_color)) {
 		if (auto* t = tex_mgr.get_texture(get_name())) {
 			set_texture(t);
 			float w = 0, h = 0; SDL_GetTextureSize(t, &w, &h);
@@ -325,6 +333,17 @@ void Text_Button::on_hover_exit(SDL_Cursor* default_cursor) {
 
 void Text_Button::set_text(const std::string& new_text) {
 	if (tex_mgr.set_text_string(get_name(), new_text)) {
+		if (auto* t = tex_mgr.get_texture(get_name())) {
+			set_texture(t);
+			float w = 0, h = 0; SDL_GetTextureSize(t, &w, &h);
+			get_src_rect() = { 0,0,w,h };
+			auto& d = get_dst_rect(); d.w = w; d.h = h;
+		}
+	}
+}
+
+void Text_Button::set_background(bool enabled, SDL_Color color) {
+	if (tex_mgr.set_text_background_const_padding(get_name(), true, color)) {
 		if (auto* t = tex_mgr.get_texture(get_name())) {
 			set_texture(t);
 			float w = 0, h = 0; SDL_GetTextureSize(t, &w, &h);

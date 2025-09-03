@@ -65,6 +65,7 @@ public:
     bool set_text_background(const std::string& name, bool enabled, SDL_Color color = { 0,0,0,0 }, int pad_x = 0, int pad_y = 0);
     bool set_text_background_const_padding(const std::string& name, bool enabled, SDL_Color color = { 0,0,0,0 });
     bool set_text_border(const std::string& name, bool enabled, SDL_Color color = { 0,0,0,0 }, int thickness = 1);
+    SDL_Color& get_bg_color(const std::string& name);
 };
 
 #endif

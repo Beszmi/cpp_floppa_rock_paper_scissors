@@ -328,3 +328,8 @@ bool texture_manager::set_text_border(const std::string& name, bool enabled, SDL
     }
     return rerender_text_texture(it->second);
 }
+
+SDL_Color& texture_manager::get_bg_color(const std::string& name) {
+    auto it = text_meta.find(name);
+    return it->second.bg_color;
+}
