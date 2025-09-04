@@ -204,6 +204,10 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 		explosion.add_element(key, tex_mgr);
 	}
 
+	obj_container.spawn_as<GameObject>("rock", "rock", tex_mgr, middle.x - (tex_mgr.get_texture("rock")->w / 2), middle.y - (middle.y / 3 + 3 * percent.y), screen_scale_factor * 0.2, false, 11);
+	obj_container.spawn_as<GameObject>("paper", "paper", tex_mgr, middle.x - (tex_mgr.get_texture("paper")->w / 2), middle.y - (middle.y / 3 + 3 * percent.y), screen_scale_factor * 0.2, false, 12);
+	obj_container.spawn_as<GameObject>("scissors", "scissors", tex_mgr, middle.x - (tex_mgr.get_texture("scissors")->w / 2), middle.y - (middle.y / 3 + 3 * percent.y), screen_scale_factor * 0.2, false, 13);
+
 	obj_container.spawn_as<GameObject_cluster>("design", "design", tex_mgr, middle.x - ((tex_mgr.get_texture("title")->w / 2) * screen_scale_factor), (middle.y - (tex_mgr.get_texture("title")->h / 2)) / 3, screen_scale_factor, false, 1);
 
 	tex_mgr.create_text_texture("result_text", "fonts/ARIAL.TTF", 48, "SCORE: NONE", Colors::black);
@@ -374,6 +378,20 @@ void Game::update(double dtSeconds) {
 		}
 
 		if (current_scene == 1) { // results screen
+			std::cout << "floppa item: " << rps::floppa_item << std::endl;
+			switch (rps::floppa_item) {
+			case 0:
+				obj_container.layer_switch(11, true);
+				break;
+			case 1:
+				obj_container.layer_switch(12, true);
+				break;
+			case 2:
+				obj_container.layer_switch(13, true);
+				break;
+			default:
+				break;
+			}
 			obj_container.layer_switch(4, false);
 			obj_container.layer_switch(1, true);
 			obj_container.layer_switch(2, true);
@@ -388,6 +406,9 @@ void Game::update(double dtSeconds) {
 			obj_container.layer_switch(4, false);
 			obj_container.layer_switch(5, false);
 			obj_container.layer_switch(6, false);
+			obj_container.layer_switch(11, false);
+			obj_container.layer_switch(12, false);
+			obj_container.layer_switch(13, false);
 			obj_container.get<Text_Button>("rock_text")->switch_enable(true);
 			obj_container.get<Text_Button>("paper_text")->switch_enable(true);
 			obj_container.get<Text_Button>("scissors_text")->switch_enable(true);

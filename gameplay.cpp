@@ -1,12 +1,16 @@
 #include "gameplay.hpp"
 
+namespace rps {
+	int floppa_item;
+}
+
 int rps::play(int input) {
-	int cpu_item = rand() % 3;
-	if ((input == 0 && cpu_item == 2) || (input == 1 && cpu_item == 0) || (input == 2 && cpu_item == 1)) {
+	floppa_item = rand() % 3;
+	if ((input == 0 && floppa_item == 2) || (input == 1 && floppa_item == 0) || (input == 2 && floppa_item == 1)) {
 		return 1; //WIN
-	} else if (input == cpu_item) {
+	} else if (input == floppa_item) {
 		return 0; //DRAW
-	} else if ((input == 2 && cpu_item == 0) || (input == 0 && cpu_item == 1) || (input == 1 && cpu_item == 2)) {
+	} else if ((input == 2 && floppa_item == 0) || (input == 0 && floppa_item == 1) || (input == 1 && floppa_item == 2)) {
 		return -1; //LOSE
 	}
 	else {

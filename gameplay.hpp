@@ -10,7 +10,8 @@
 // 0 rock; 1 paper; 2 scissors
 namespace rps {
 	int play(int input);
-}
+	extern int floppa_item;
+};
 
 struct player_stat {
 	std::string name = "epic_gamer";
